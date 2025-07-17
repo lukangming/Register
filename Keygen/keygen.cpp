@@ -56,6 +56,7 @@ QByteArray Keygen::aesDecrypt(const QByteArray &encryptedData)
 {
     QAESEncryption decryption(m_aesItf.level, m_aesItf.mode, m_aesItf.padding);
     QByteArray decrypted = decryption.decode(encryptedData, m_aesItf.key, m_aesItf.iv);
+   // qDebug()<<m_aesItf.key<<' '<<m_aesItf.iv;
     if (decrypted.isEmpty()) {
         qWarning() << "AES解密失败";
     }
@@ -112,14 +113,14 @@ void Keygen::on_generateButton_clicked()//生成许可证
 {
     // QJsonObject featuresObj{
     //     {"全部权限", true},
-    //     {"部分功能", false},
+    //     {"部分功能", true},
     //     {"其他功能", true}
     // };
     // QJsonObject jsonObj{
     //     {"auth_required", true},
     //     {"device_sn", "SN987654"},
     //     {"expire_date", ""},
-    //     {"customer", QString::fromUtf8("lukangming")},
+    //     {"customer", QString::fromUtf8("lukangmi21ng")},
     //     {"activation_code", QString::fromUtf8("")},
     //     {"features", featuresObj}  // 改成对象形式
     // };
@@ -148,7 +149,6 @@ void Keygen::on_generateButton_clicked()//生成许可证
     QString activation_code = hash.toHex();
 
    // qDebug()<<activation_code;
-
     ui->activeCode->setText(activation_code);
     jsonObj["activation_code"] = activation_code;
 
@@ -176,7 +176,7 @@ void Keygen::on_openFileButton_clicked()//导入并解析授权文件
 {
     QString filePath = QFileDialog::getOpenFileName(this,
                                                     tr("选择授权文件"),
-                                                    QCoreApplication::applicationDirPath() + "/file",
+                                                    QCoreApplication::applicationDirPath(),
                                                     tr("授权文件 (*.auth);"));
     if (filePath.isEmpty())
         return;
@@ -194,18 +194,20 @@ void Keygen::decryptFile() //读取并解密文件
 
     QByteArray encryptedData = QByteArray::fromBase64(encryptedBase64Data);
 
+
     QByteArray decryptedData = aesDecrypt(encryptedData);
     if (decryptedData.isEmpty()) {
         QMessageBox::critical(this, "错误", "解密失败，密钥/IV可能错误或文件被破坏");
         return;
     }
 
-    if(m_aesItf.padding == 1)
+    if (m_aesItf.padding == 1)
         decryptedData = PaddingUtils::removePKCS7Padding(decryptedData);
-    else if(m_aesItf.padding == 0)
+    else if (m_aesItf.padding == 0)
         decryptedData = PaddingUtils::removeZeroPadding(decryptedData);
     else
         decryptedData = PaddingUtils::removeISO7816Padding(decryptedData);
+
 
     m_authFilePath.clear();
     ui->lineEditFilePath->clear();
@@ -213,8 +215,9 @@ void Keygen::decryptFile() //读取并解密文件
     QJsonParseError parseError;
     QJsonDocument doc = QJsonDocument::fromJson(decryptedData, &parseError);
     if (parseError.error != QJsonParseError::NoError) {
-        QMessageBox::critical(this, "错误", "JSON解析失败: " + parseError.errorString());
-        qDebug() << "解密后原始数据:" << decryptedData;
+       // QMessageBox::critical(this, "错误", "JSON解析失败: " + parseError.errorString());
+        QMessageBox::critical(this, "错误", "授权文件损坏或格式错误，请在服务设置里检查格式是否正确");
+       // qDebug() << "解密后原始数据:" << decryptedData;
         return;
     }
 
@@ -245,11 +248,11 @@ void Keygen::decryptFile() //读取并解密文件
         ui->tableFeatures->setCellWidget(row, 1, widget);
     }
 
-    qDebug() << "解密后的JSON:" << jsonObj;
+    //qDebug() << "解密后的JSON:" << jsonObj;
     ui->lineEditCustomer->setText(jsonObj.value("customer").toString());
     ui->lineEditDeviceSn->setText(jsonObj.value("device_sn").toString());
     ui->dateEditExpire->setDate(QDate::fromString(jsonObj.value("expire_date").toString(), "yyyy-MM-dd"));
-    QMessageBox::information(this, "成功", "解密成功，JSON内容已打印到调试输出");
+    QMessageBox::information(this, "成功", "解密成功");
 }
 
 void Keygen::on_tiralBtn_clicked()
@@ -291,6 +294,5 @@ void Keygen::setSaveDir(const QString &dir)
 void Keygen::loadSettings(QSettings &settings)
 {
     m_saveDir = settings.value("saveDir", "").toString();
-
     SettingsHelper::loadAesItf(settings, m_aesItf);
 }

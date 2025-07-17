@@ -6,10 +6,11 @@ QByteArray removePKCS7Padding(const QByteArray &data)
 {
     if (data.isEmpty()) return data;
     unsigned char pad = static_cast<unsigned char>(data.at(data.size() - 1));
-    if (pad == 0 || pad > 16) return data;
+    if (pad == 0 || pad > data.size()) return data; // 修正越界风险
+
     for (int i = 0; i < pad; ++i) {
         if (static_cast<unsigned char>(data.at(data.size() - 1 - i)) != pad) {
-            return data;
+            return data; // 填充错误，返回原文
         }
     }
     return data.left(data.size() - pad);
@@ -24,8 +25,18 @@ QByteArray removeISO7816Padding(const QByteArray &data)
     if (i >= 0 && data.at(i) == '\x80') {
         return data.left(i);
     }
-    return data; // 未检测到填充标志，返回原文
+    return data;
 }
+
+QByteArray removeISO10126Padding(const QByteArray &data)
+{
+    if (data.isEmpty()) return data;
+    unsigned char pad = static_cast<unsigned char>(data.at(data.size() - 1));
+    if (pad == 0 || pad > 16) return data; // pad长度异常，返回原数据
+    return data.left(data.size() - pad);
+}
+
+
 
 QByteArray removeZeroPadding(const QByteArray &data)
 {

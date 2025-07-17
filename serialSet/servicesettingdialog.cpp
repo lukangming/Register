@@ -30,7 +30,7 @@ void ServiceSettingDialog::initDialog()
 
     ui->comboBoxPadding->addItem("ZERO", QAESEncryption::ZERO);
     ui->comboBoxPadding->addItem("PKCS7", QAESEncryption::PKCS7);
-    ui->comboBoxPadding->addItem("ISO", QAESEncryption::ISO);
+    ui->comboBoxPadding->addItem("ISO7816", QAESEncryption::ISO);
     ui->comboBoxPadding->setCurrentIndex(2); // 默认PKCS7
 
     // 初始化密钥和IV，默认值用构造函数的默认

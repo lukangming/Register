@@ -20,6 +20,7 @@ public:
     ~MainWindow();
 protected:
     void closeEvent(QCloseEvent *event)override;
+    void initDataBase();
 
 protected slots:
     void navBarSlot(int);
