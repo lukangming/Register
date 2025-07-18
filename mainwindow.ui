@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>PM-Register注册机</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="images/image.qrc">
+    <normaloff>:/image/logo.jpg</normaloff>:/image/logo.jpg</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="barWid" native="true">
     <property name="geometry">
@@ -48,6 +52,8 @@
    </widget>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="images/image.qrc"/>
+ </resources>
  <connections/>
 </ui>

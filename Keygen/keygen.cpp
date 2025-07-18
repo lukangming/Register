@@ -25,21 +25,50 @@ Keygen::Keygen(QWidget *parent) :
     m_aesItf = sAesItf(); // 使用默认构造，初始化AES参数
 
     set_background_icon(this,":/image/box_back.jpg");
+    m_settingsWidget = new ServiceSettingWidget(ui->settingsBox);
+    ui->settingsBox->setTitle("AES加密设置");
 
-    ui->dateEditExpire->setCalendarPopup(true);
-    ui->tableFeatures->setColumnCount(2);
-    ui->tableFeatures->setHorizontalHeaderLabels(QStringList() << "功能名称" << "启用");
-    ui->tableFeatures->setColumnWidth(0, 585);
-    ui->dateEditExpire->setDisplayFormat("yyyy-MM-dd");
-    ui->dateEditExpire->setDate(QDate::currentDate());
-    m_authFilePath.clear();
-    ui->lineEditFilePath->setReadOnly(true);
-    ui->activeCode->setReadOnly(true);
+    // 加载配置
+    QSettings settings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
+    m_settingsWidget->loadSettings(settings);
+    connect(m_settingsWidget, &ServiceSettingWidget::configChanged,
+            this, &Keygen::onSettingsConfigChanged);
+    init();
+
 }
 
 Keygen::~Keygen()
 {
     delete ui;
+}
+
+void Keygen::onSettingsConfigChanged(const sAesItf &config, const QString &savePath)
+{
+    setAesConfig(config);
+    setSaveDir(savePath);
+
+    // 保存配置到文件
+    QSettings settings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
+    m_settingsWidget->saveSettings(settings);
+}
+
+void Keygen::init()
+{
+
+    buttonGroup = new QButtonGroup(this);
+
+    buttonGroup->addButton(ui->verOnBtn,0);
+    buttonGroup->addButton(ui->verOffBtn,1);
+
+    ui->dateEditExpire->setCalendarPopup(true);
+    ui->tableFeatures->setColumnCount(2);
+    ui->tableFeatures->setHorizontalHeaderLabels(QStringList() << "启用" << "功能名称");
+    ui->tableFeatures->setColumnWidth(1, 585);
+    ui->dateEditExpire->setDisplayFormat("yyyy-MM-dd");
+    ui->dateEditExpire->setDate(QDate::currentDate());
+    m_authFilePath.clear();
+    ui->lineEditFilePath->setReadOnly(true);
+    ui->activeCode->setReadOnly(true);
 }
 
 QByteArray Keygen::aesEncrypt(const QByteArray &plainText)
@@ -124,6 +153,7 @@ void Keygen::on_generateButton_clicked()//生成许可证
     //     {"activation_code", QString::fromUtf8("")},
     //     {"features", featuresObj}  // 改成对象形式
     // };
+
     if (ui->lineEditDeviceSn->text().isEmpty()) {
         QMessageBox::warning(this, "提示", "请先导入授权文件");
         return;
@@ -131,8 +161,8 @@ void Keygen::on_generateButton_clicked()//生成许可证
 
     int rowCount = ui->tableFeatures->rowCount();
     for (int i = 0; i < rowCount; ++i) {
-        QString featureName = ui->tableFeatures->item(i, 0)->text();
-        QWidget *widget = ui->tableFeatures->cellWidget(i, 1);
+        QString featureName = ui->tableFeatures->item(i, 1)->text();
+        QWidget *widget = ui->tableFeatures->cellWidget(i, 0);
         QCheckBox *checkBox = widget->findChild<QCheckBox *>();
         bool enabled = checkBox && checkBox->isChecked();
         featuresObj[featureName] = enabled;
@@ -140,6 +170,9 @@ void Keygen::on_generateButton_clicked()//生成许可证
     jsonObj["features"] = featuresObj;
     jsonObj["expire_date"] = ui->dateEditExpire->text();
     jsonObj["customer"] = ui->lineEditCustomer->text();
+
+    if(buttonGroup->button(0)->isCheckable()) jsonObj["auth_required"] = "true";
+    else jsonObj["auth_required"] = "false";
 
     QString combined = jsonObj.value("device_sn").toString()
                        + jsonObj["expire_date"].toString()
@@ -168,7 +201,7 @@ void Keygen::on_generateButton_clicked()//生成许可证
     QString expireFlag = (expireDate == "2099-12-31") ? "PERM" : expireDate;
     customer.replace(QRegularExpression("[\\\\/:*?\"<>|\\s]"), "_");expireFlag.replace(QRegularExpression("[\\\\/:*?\"<>|\\s]"), "_");
 
-    QString fileName = QString("%1_%2_Auth.auth").arg(customer, expireFlag);
+    QString fileName = QString("%1_%2.license").arg(customer, expireFlag);
     saveEncryptedFile(base64Data, fileName);
 }
 
@@ -216,7 +249,7 @@ void Keygen::decryptFile() //读取并解密文件
     QJsonDocument doc = QJsonDocument::fromJson(decryptedData, &parseError);
     if (parseError.error != QJsonParseError::NoError) {
        // QMessageBox::critical(this, "错误", "JSON解析失败: " + parseError.errorString());
-        QMessageBox::critical(this, "错误", "授权文件损坏或格式错误，请在服务设置里检查格式是否正确");
+        QMessageBox::critical(this, "错误", "授权文件损坏或格式错误，请检查格式是否正确");
        // qDebug() << "解密后原始数据:" << decryptedData;
         return;
     }
@@ -232,7 +265,7 @@ void Keygen::decryptFile() //读取并解密文件
         QTableWidgetItem *nameItem = new QTableWidgetItem(featureName);
         nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
         nameItem->setTextAlignment(Qt::AlignCenter); // 字体居中
-        ui->tableFeatures->setItem(row, 0, nameItem);
+        ui->tableFeatures->setItem(row, 1, nameItem);
 
         // 用QCheckBox居中显示
         QCheckBox *checkBox = new QCheckBox();
@@ -245,10 +278,13 @@ void Keygen::decryptFile() //读取并解密文件
         layout->setContentsMargins(0, 0, 0, 0);
         widget->setLayout(layout);
 
-        ui->tableFeatures->setCellWidget(row, 1, widget);
+        ui->tableFeatures->setCellWidget(row, 0, widget);
     }
 
     //qDebug() << "解密后的JSON:" << jsonObj;
+    if(jsonObj.value("auth_required") == "true") buttonGroup->button(0)->setChecked(1);
+    else buttonGroup->button(1)->setChecked(1);
+
     ui->lineEditCustomer->setText(jsonObj.value("customer").toString());
     ui->lineEditDeviceSn->setText(jsonObj.value("device_sn").toString());
     ui->dateEditExpire->setDate(QDate::fromString(jsonObj.value("expire_date").toString(), "yyyy-MM-dd"));
@@ -258,7 +294,7 @@ void Keygen::decryptFile() //读取并解密文件
 void Keygen::on_tiralBtn_clicked()
 {
     ui->dateEditExpire->setDisplayFormat("yyyy-MM-dd");
-    ui->dateEditExpire->setDate(QDate::currentDate().addDays(15)); // 当前时间加15天
+    ui->dateEditExpire->setDate(QDate::currentDate().addDays(100)); // 当前时间加15天
 }
 
 void Keygen::on_formBtn_clicked()
@@ -278,12 +314,12 @@ void Keygen::on_copyBtn_clicked() //复制激活码槽函数
 void Keygen::setAesConfig(const sAesItf &config)
 {
     m_aesItf = config;
-    qDebug() << "已更新 AES 配置:"
-             << "Level:" << m_aesItf.level
-             << "Mode:" << m_aesItf.mode
-             << "Padding:" << m_aesItf.padding
-             << "Key:" << m_aesItf.key.toHex()
-             << "IV:" << m_aesItf.iv.toHex();
+    // qDebug() << "已更新 AES 配置:"
+    //          << "Level:" << m_aesItf.level
+    //          << "Mode:" << m_aesItf.mode
+    //          << "Padding:" << m_aesItf.padding
+    //          << "Key:" << m_aesItf.key.toHex()
+    //          << "IV:" << m_aesItf.iv.toHex();
 }
 
 void Keygen::setSaveDir(const QString &dir)
@@ -296,3 +332,4 @@ void Keygen::loadSettings(QSettings &settings)
     m_saveDir = settings.value("saveDir", "").toString();
     SettingsHelper::loadAesItf(settings, m_aesItf);
 }
+

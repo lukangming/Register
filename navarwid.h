@@ -25,7 +25,7 @@ signals:
 private slots:
     void on_MainWid_clicked();
 
-    void on_SerSet_clicked();
+   // void on_SerSet_clicked();
 
 private:
     Ui::navarwid *ui;

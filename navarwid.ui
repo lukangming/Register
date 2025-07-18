@@ -47,7 +47,7 @@
   <widget class="QPushButton" name="MainWid">
    <property name="geometry">
     <rect>
-     <x>639</x>
+     <x>759</x>
      <y>10</y>
      <width>101</width>
      <height>51</height>
@@ -60,24 +60,6 @@
    </property>
    <property name="text">
     <string>主界面</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="SerSet">
-   <property name="geometry">
-    <rect>
-     <x>758</x>
-     <y>10</y>
-     <width>101</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>服务设置</string>
    </property>
   </widget>
   <widget class="QPushButton" name="LogSet">

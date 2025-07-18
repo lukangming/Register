@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 {
     ui->setupUi(this);
-
+    this->setFixedSize(1260, 860);
    // initDataBase(); // 添加数据库并建表
 
     initWid();
