@@ -1,7 +1,6 @@
 #ifndef CONFIGBASH
 #define CONFIGBASH
 #include "cfgcom.h"
-#include "serialstatuswid.h"
 
 enum eDevTypes {
     IMM=0,

@@ -1,6 +1,5 @@
 #ifndef SETUP_MAINWID_H
 #define SETUP_MAINWID_H
-#include "serialstatuswid.h"
 #include <QWidget>
 #include "usermainwid.h"
 
@@ -27,7 +26,6 @@ private slots:
 
 private:
     Ui::Setup_MainWid *ui;
-    SerialStatusWid* mDeWid;
     UserMainWid *mUserWid;
     //sCfgItem *mItem;
 };

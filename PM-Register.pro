@@ -11,7 +11,6 @@ CONFIG += c++17
 include(common/common.pri)
 include(Keygen/Keygen.pri)
 include(qaesencryption/qaesencryption.pri)
-include(usrMgt/usrMgt.pri)
 include(setups/setups.pri)
 include(logs/logs.pri)
 include(cores/cores.pri)
