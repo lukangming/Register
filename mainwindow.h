@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include "navarwid.h"
 #include "keygen.h"
-
+#include "setups/setup_mainwid.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -20,7 +20,6 @@ public:
     ~MainWindow();
 protected:
     void closeEvent(QCloseEvent *event)override;
-    void initDataBase();
 
 protected slots:
     void navBarSlot(int);
@@ -28,6 +27,7 @@ protected slots:
 private:
     Ui::MainWindow *ui;
     navarwid* mNavar;
+    Setup_MainWid *mSetupWid;
     Keygen* mkeygen;
 
     void initWid();

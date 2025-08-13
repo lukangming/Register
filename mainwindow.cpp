@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "dbcom/databasemanager.h"
 #include <QSettings>
 #include <QDir>
 MainWindow::MainWindow(QWidget *parent)
@@ -10,10 +9,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 {
     ui->setupUi(this);
-    this->setFixedSize(1260, 860);
-   // initDataBase(); // 添加数据库并建表
+   // this->setFixedSize(1260, 860);
 
     initWid();
+    connect(mNavar, &navarwid::navBarSig, this, &MainWindow::navBarSlot);
     loadAllSettings(); //读写配置文件
 }
 
@@ -22,29 +21,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::initDataBase()
-{
-    QString appDir = QCoreApplication::applicationDirPath();
-    QString dbDir = appDir + "/db";
-    QDir dir(dbDir);
-    if(!dir.exists()){
-        dir.mkpath(".");
-    }
-
-    QString dbFilePath = dbDir + "/PM_Register.db";
-
-    if(!DatabaseManager::instance().init(dbFilePath)){
-       // qDebug() << "数据库初始化失败";
-    } else{
-       // qDebug() << "数据库初始化成功";
-    }
-}
 
 void MainWindow::initWid()
 {
     mNavar = new navarwid(ui->barWid);
     ui->stackedWidget->addWidget(mkeygen);
-    mNavar->setKeygenWidget(mkeygen);
+    mSetupWid = new Setup_MainWid(this);
+    ui->stackedWidget->addWidget(mSetupWid);
 }
 
 void MainWindow::navBarSlot(int id)

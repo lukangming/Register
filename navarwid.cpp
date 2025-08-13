@@ -10,8 +10,13 @@ navarwid::navarwid(QWidget *parent)
     , ui(new Ui::navarwid)
 {
     ui->setupUi(this);
+    QGridLayout *gridLayout = new QGridLayout(parent);
+    gridLayout->setContentsMargins(0, 0, 0, 0);
+    gridLayout->addWidget(this);
     set_background_icon(this,":/image/title_back.jpg");
-
+    mUserLand = new UsrLandDlg(this);
+    QTimer::singleShot(5,this,SLOT(on_loginBtn_clicked()));
+    connect(mUserLand,SIGNAL(sendUserNameSig(QString)),this,SLOT(recvUserNameSlot(QString)));
 }
 
 navarwid::~navarwid()
@@ -25,30 +30,28 @@ void navarwid::on_MainWid_clicked()
     emit navBarSig(0);
 }
 
-
-// void navarwid::on_SerSet_clicked()
-// {
-//     ServiceSettingDialog dlg(this);
-//     dlg.setWindowTitle("服务设置");
-//     // 1. 创建 QSettings 对象（和主程序用同一个路径）
-//     QSettings settings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
-
-//     // 2. 加载设置
-//     dlg.loadSettings(settings);
-
-//     if (dlg.exec() == QDialog::Accepted) {
-//         if (m_keygenWidget) {
-//             m_keygenWidget->setAesConfig(dlg.getAesConfig());
-//             m_keygenWidget->setSaveDir(dlg.getSavePath());
-//             //QMessageBox::information(this, "提示", "加密配置已更新！");
-//             dlg.saveSettings(settings);
-//         } else {
-//             QMessageBox::warning(this, "错误", "Keygen 未初始化，无法更新配置！");
-//         }
-//     }
-// }
-
-void navarwid::setKeygenWidget(Keygen *keygen)
+void navarwid::on_setBtn_clicked()
 {
-    m_keygenWidget = keygen;
+    emit navBarSig(1);
+}
+
+
+void navarwid::on_loginBtn_clicked()
+{
+    bool lang = LandingUser::get()->land;
+    if(lang) {
+        int ret = mUserLand->selectWork();
+        if(ret == 1) { // 用户切换
+            mUserLand->exec();
+        }  else if(ret == 2) { // 用户退出
+            mUserLand->quitWidget();
+        }
+    } else {
+        mUserLand->exec();
+    }
+}
+
+void navarwid::recvUserNameSlot(QString str)
+{
+    ui->userLab->setText(str);
 }

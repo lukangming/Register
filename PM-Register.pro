@@ -11,9 +11,8 @@ CONFIG += c++17
 include(common/common.pri)
 include(Keygen/Keygen.pri)
 include(qaesencryption/qaesencryption.pri)
-#include(serialSet/serialSet.pri)
 include(usrMgt/usrMgt.pri)
-
+include(setups/setups.pri)
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
