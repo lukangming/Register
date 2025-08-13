@@ -11,6 +11,7 @@ include(cfgcom/cfgcom.pri)
 include(excel/excel.pri)
 include(logcom/logcom.pri)
 include(idgeneratorcom/idgeneratorcom.pri)
+include(SettingsHelper/SettingsHelper.pri)
 
 HEADERS += \
     $$PWD/globals/globals.h \

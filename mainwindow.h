@@ -5,6 +5,8 @@
 #include "navarwid.h"
 #include "keygen.h"
 #include "setups/setup_mainwid.h"
+#include "logmainwid.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -29,6 +31,7 @@ private:
     navarwid* mNavar;
     Setup_MainWid *mSetupWid;
     Keygen* mkeygen;
+    LogMainWid *mLog;
 
     void initWid();
     void saveAllSettings();

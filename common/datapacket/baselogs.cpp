@@ -29,27 +29,13 @@ bool BaseLogs::writeMac()
 {
     sMacItem it;
 
-    it.fw = mDt->fwVersion;
+    //it.fw = mDt->fwVersion;
     //it.user = mItem->user;
-    it.sn = mDt->sn;
+    //it.sn = mDt->sn;
     it.mac = mMac;
     mMac.clear();
 
     return DbMacs::bulid()->insertItem(it);
-}
-bool BaseLogs::appendLogItem(const QString &str, bool pass)
-{
-    sStateItem it;
-    if(pass) {
-        it.result = tr("通过");
-    } else {
-        it.result = tr("失败");
-    }
-
-    it.memo = str;
-    mLogItems << it;
-
-    return pass;
 }
 
 bool BaseLogs::setLogs(sDevInfo& dt)
@@ -57,19 +43,17 @@ bool BaseLogs::setLogs(sDevInfo& dt)
     Db_Tran db;
     sLogItem it;
 
-    it.fw = dt.fwVersion;
-    it.hw = dt.hwVersion;
-    it.result = dt.reason;
+    it.activationCode = dt.activationCode;
+    it.customer = dt.customer;
+    it.encryption = dt.encryption;
+    it.iv = dt.iv;
+    it.key = dt.key;
+    it.keylength = dt.keylength;
+    it.licenseFile = dt.licenseFile;
+    it.paddingMode = dt.paddingMode;
     it.sn = dt.sn;
-    it.eth1Mac = dt.eth1Mac;
-    it.eth2Mac = dt.eth2Mac;
-    it.eth3Mac = dt.eth3Mac;
-    it.spe1Mac = dt.spe1Mac;
-    it.spe2Mac = dt.spe2Mac;
-    it.btMac = dt.btMac;
-    it.zbMac = dt.zbMac;
-    it.pcbCode = dt.pcbCode;
-    it.state = dt.state;
+    it.user = dt.user;
+
     return DbLogs::bulid()->insertItem(it);
 }
 

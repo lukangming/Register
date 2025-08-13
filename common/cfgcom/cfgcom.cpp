@@ -10,7 +10,7 @@ CfgCom::CfgCom(QObject *parent)
     mCfgIni = nullptr;
     QCoreApplication::setOrganizationName("db");
     QCoreApplication::setOrganizationDomain("clever.com");
-    QCoreApplication::setApplicationName("MVP3");
+    QCoreApplication::setApplicationName("Register");
 
     cfgOpen(parent);
 }

@@ -11,8 +11,8 @@ DbLogs::DbLogs()
     createTable();
     tableTile = tr("状态日志");
     //hiddens <<  9;
-    headList << tr("序列号") << tr("硬件版本") << tr("固件版本") << tr("ETH1Mac") << tr("ETH2Mac") << tr("ETH3Mac")
-             << tr("SPE1Mac") << tr("SPE2Mac") << tr("BTMac") << tr("ZBMac") << tr("pcb码") << tr("状态") << tr("原因");
+    headList << tr("用户") << tr("客户") << tr("密钥长度") << tr("加密模式") << tr("填充方式") << tr("偏移量")
+             << tr("密钥") << tr("序列号") << tr("激活码") << tr("许可文件");
 }
 
 void DbLogs::createTable()
@@ -22,19 +22,16 @@ void DbLogs::createTable()
         "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
         "date TEXT,"
         "time TEXT,"
+        "user TEXT,"
+        "customer TEXT,"
+        "keyLength TEXT,"
+        "encryptionMode TEXT,"
+        "paddingMode TEXT,"
+        "iv TEXT,"
+        "key TEXT,"
         "sn TEXT,"
-        "hw TEXT,"
-        "fw TEXT,"
-        "eth1 TEXT,"
-        "eth2 TEXT,"
-        "eth3 TEXT,"
-        "spe1 TEXT,"
-        "spe2 TEXT,"
-        "bt TEXT,"
-        "zb TEXT,"
-        "pcbcode TEXT,"
-        "state INTEGER,"
-        "reason TEXT"
+        "activationCode TEXT,"
+        "licenseFile TEXT"
         ");";
 
     QSqlQuery query(mDb);
@@ -55,8 +52,8 @@ DbLogs *DbLogs::bulid()
 bool DbLogs::insertItem(const sLogItem &item)
 {
     QString cmd =
-        "INSERT INTO %1 (date, time, sn, hw, fw, eth1, eth2, eth3, spe1, spe2, bt, zb, pcbcode, state, reason) "
-        "VALUES (:date, :time, :sn, :hw, :fw, :eth1, :eth2, :eth3, :spe1, :spe2, :bt, :zb, :pcbcode, :state, :reason)";
+        "INSERT INTO %1 (date, time, user, customer, keyLength, encryptionMode, paddingMode, iv, key, sn, activationCode, licenseFile) "
+        "VALUES (:date, :time, :user, :customer, :keyLength, :encryptionMode, :paddingMode, :iv, :key, :sn, :activationCode, :licenseFile)";
 
     bool ret = modifyItem(item, cmd.arg(tableName()));
     if (ret) emit itemChanged(item.id, Insert);
@@ -70,19 +67,16 @@ bool DbLogs::modifyItem(const sLogItem &item, const QString &cmd)
 
     query.bindValue(":date", item.date);
     query.bindValue(":time", item.time);
-    query.bindValue(":hw", item.hw);
-    query.bindValue(":fw", item.fw);
-    query.bindValue(":eth1", item.eth1Mac);
-    query.bindValue(":eth2", item.eth2Mac);
-    query.bindValue(":eth3", item.eth3Mac);
-    query.bindValue(":spe1", item.spe1Mac);
-    query.bindValue(":spe2", item.spe2Mac);
-    query.bindValue(":bt", item.btMac);
-    query.bindValue(":zb", item.zbMac);
-    query.bindValue(":pcbcode", item.pcbCode);
-    query.bindValue(":state", item.state ? 1 : 0); // bool 转 int
-    query.bindValue(":reason", item.result);
+    query.bindValue(":user", item.user);
+    query.bindValue(":customer", item.customer);
+    query.bindValue(":keyLength", item.keylength);
+    query.bindValue(":encryptionMode", item.encryption);
+    query.bindValue(":paddingMode", item.paddingMode);
+    query.bindValue(":iv", item.iv);
+    query.bindValue(":key", item.key);
     query.bindValue(":sn", item.sn);
+    query.bindValue(":activationCode", item.activationCode);
+    query.bindValue(":licenseFile", item.licenseFile);
 
     bool ret = query.exec();
     if (!ret) throwError(query.lastError());

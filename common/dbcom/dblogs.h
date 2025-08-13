@@ -4,18 +4,16 @@
 
 struct sLogItem : public DbBasicItem{
     sLogItem(){}
-    QString user, fw, hw, result, sn;
+    QString user, sn;
+    QString customer;
+    QString keylength;
+    QString encryption;
+    QString paddingMode;
+    QString iv;
+    QString key;
+    QString activationCode;
+    QString licenseFile;
 
-    QString eth1Mac;           // ETH1 Mac 地址
-    QString eth2Mac;           // ETH2 Mac 地址
-    QString eth3Mac;           // ETH3 Mac 地址
-    QString spe1Mac;           // SPE1 Mac 地址
-    QString spe2Mac;           // SPE2 Mac 地址
-    QString btMac;             // BT Mac 地址
-    QString zbMac;             // ZB Mac 地址
-    QString pcbCode;           // PCB 码
-
-    bool state;             // 状态
 };
 
 class DbLogs : public SqlBasic<sLogItem>

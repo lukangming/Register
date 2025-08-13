@@ -16,26 +16,22 @@ sDataPacket *sDataPacket::build()
 
 void sDataPacket::init()
 {
-    pro->step = 0;
-    pro->result = 0;
-    pro->pass.clear();
-    pro->status.clear();
+    // pro->step = 0;
+    // pro->result = 0;
+    // pro->pass.clear();
+    // pro->status.clear();
 
-    dev->dt.sn.clear();              // 清空序列号
-    dev->dt.hwVersion.clear();       // 清空硬件版本
-    dev->dt.fwVersion.clear();       // 清空固件版本
-    dev->dt.eth1Mac.clear();         // 清空 ETH1 MAC 地址
-    dev->dt.eth2Mac.clear();         // 清空 ETH2 MAC 地址
-    dev->dt.eth3Mac.clear();         // 清空 ETH3 MAC 地址
-    dev->dt.spe1Mac.clear();         // 清空 SPE1 MAC 地址
-    dev->dt.spe2Mac.clear();         // 清空 SPE2 MAC 地址
-    dev->dt.btMac.clear();           // 清空 BT MAC 地址
-    dev->dt.zbMac.clear();           // 清空 ZB MAC 地址
-    dev->dt.pcbCode.clear();         // 清空 PCB 码
-    dev->dt.state = 0;               // 清空状态
-    dev->dt.reason.clear();          // 清空原因
+    dev->dt.user = "";
+    dev->dt.keylength = "";
+    dev->dt.paddingMode = "";
+    dev->dt.paddingMode = "";
+    dev->dt.iv = "";
+    dev->dt.key = "";
+    dev->dt.customer = "";
+    dev->dt.activationCode = "";
+    dev->dt.sn = "";
+    dev->dt.licenseFile = "";
 
-
-    pro->result = Test_Info;
-    pro->startTime = QTime::currentTime();
+    // pro->result = Test_Info;
+    // pro->startTime = QTime::currentTime();
 }

@@ -15,7 +15,6 @@ public:
     void saveLogs();
     bool setLogs(sDevInfo &);
     void writeMac(const QString &mac){mMac=mac;}
-    bool appendLogItem(const QString &str, bool pass);
 
 protected:
     void run(){saveLogs();}

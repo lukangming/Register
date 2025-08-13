@@ -28,6 +28,9 @@ void MainWindow::initWid()
     ui->stackedWidget->addWidget(mkeygen);
     mSetupWid = new Setup_MainWid(this);
     ui->stackedWidget->addWidget(mSetupWid);
+    mLog = new LogMainWid(this);
+    ui->stackedWidget->addWidget(mLog);
+
 }
 
 void MainWindow::navBarSlot(int id)
@@ -46,9 +49,8 @@ void MainWindow::saveAllSettings() {
 }
 
 void MainWindow::loadAllSettings() {
-    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
 
-    QSettings settings(configPath, QSettings::IniFormat); // 这里使用完整路径
+    QSettings settings(CfgCom::bulid()->pathOfData("cfg.ini"), QSettings::IniFormat);
 
     mkeygen->loadSettings(settings);;
 

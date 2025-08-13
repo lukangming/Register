@@ -13,6 +13,8 @@ include(Keygen/Keygen.pri)
 include(qaesencryption/qaesencryption.pri)
 include(usrMgt/usrMgt.pri)
 include(setups/setups.pri)
+include(logs/logs.pri)
+include(cores/cores.pri)
 SOURCES += \
     main.cpp \
     mainwindow.cpp \

@@ -6,12 +6,14 @@
 #include <QByteArray>
 #include "aesitf.h"
 #include "servicesettingwidget.h"
+#include "test_corethread.h"
+#include <baseobject.h>
 #include <QSettings>
 namespace Ui {
 class Keygen;
 }
 
-class Keygen : public QWidget
+class Keygen : public QWidget,public BaseObject
 {
     Q_OBJECT
 
@@ -34,7 +36,8 @@ private slots:
     void on_formBtn_clicked();
 
     void on_copyBtn_clicked();
-
+protected:
+    void setDevlogs();
 
 private:
     void decryptFile();
@@ -56,5 +59,7 @@ private:
     QByteArray aesDecrypt(const QByteArray &encryptedData); //解密
     void saveEncryptedFile(const QByteArray &data, const QString &fileName); //保存许可证
     QByteArray loadEncryptedFile();//读取授权文件内容信息
+
+    Test_CoreThread *mCoreThread;
 };
 #endif // KEYGEN_H

@@ -17,19 +17,24 @@
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include "SettingsHelper.h"
+#include "cfgcom.h"
+#include "datapacket.h"
+
+extern QString user_land_name();
 Keygen::Keygen(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Keygen)
 {
     ui->setupUi(this);
     m_aesItf = sAesItf(); // 使用默认构造，初始化AES参数
-
+    mCoreThread = new Test_CoreThread(this);
     set_background_icon(this,":/image/box_back.jpg");
     m_settingsWidget = new ServiceSettingWidget(ui->settingsBox);
     ui->settingsBox->setTitle("AES加密设置");
 
     // 加载配置
-    QSettings settings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
+    QSettings settings(CfgCom::bulid()->pathOfData("cfg.ini"), QSettings::IniFormat);
+
     m_settingsWidget->loadSettings(settings);
     connect(m_settingsWidget, &ServiceSettingWidget::configChanged,
             this, &Keygen::onSettingsConfigChanged);
@@ -48,7 +53,8 @@ void Keygen::onSettingsConfigChanged(const sAesItf &config, const QString &saveP
     setSaveDir(savePath);
 
     // 保存配置到文件
-    QSettings settings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
+    QSettings settings(CfgCom::bulid()->pathOfData("cfg.ini"), QSettings::IniFormat);
+
     m_settingsWidget->saveSettings(settings);
 }
 
@@ -116,6 +122,23 @@ void Keygen::saveEncryptedFile(const QByteArray &data, const QString &fileName)
 
     QMessageBox::information(this, "成功", "授权文件生成成功！\n路径：" + filePath);
     qDebug() << "文件已保存：" << filePath;
+
+    mDev->dt.licenseFile = data;
+    setDevlogs();
+}
+
+void Keygen::setDevlogs()
+{
+    mDev->dt.user = user_land_name();
+    mDev->dt.keylength    = AESHelper::levelToStr(m_aesItf.level);
+    mDev->dt.encryption = AESHelper::modeToStr(m_aesItf.mode);
+    mDev->dt.paddingMode  = AESHelper::paddingToStr(m_aesItf.padding);
+    mDev->dt.iv = m_aesItf.iv.toHex();
+    mDev->dt.key = m_aesItf.key.toHex();
+    mDev->dt.sn = ui->lineEditDeviceSn->text();
+    mDev->dt.customer = ui->lineEditCustomer->text();
+
+    mCoreThread->start();
 }
 
 QByteArray Keygen::loadEncryptedFile() //读取授权文件内容信息
@@ -140,6 +163,8 @@ QByteArray Keygen::loadEncryptedFile() //读取授权文件内容信息
 
 void Keygen::on_generateButton_clicked()//生成许可证
 {
+    mPacket->init(); // 初始化日志对象
+
     // QJsonObject featuresObj{
     //     {"全部权限", true},
     //     {"部分功能", true},
@@ -180,6 +205,8 @@ void Keygen::on_generateButton_clicked()//生成许可证
 
     QByteArray hash = QCryptographicHash::hash(combined.toUtf8(), QCryptographicHash::Sha256);
     QString activation_code = hash.toHex();
+
+    mDev->dt.activationCode = activation_code;
 
    // qDebug()<<activation_code;
     ui->activeCode->setText(activation_code);
@@ -331,5 +358,6 @@ void Keygen::loadSettings(QSettings &settings)
 {
     m_saveDir = settings.value("saveDir", "").toString();
     SettingsHelper::loadAesItf(settings, m_aesItf);
+
 }
 

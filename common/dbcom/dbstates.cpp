@@ -56,13 +56,13 @@ bool DbStates::modifyItem(const sStateItem &item, const QString &cmd)
     QSqlQuery query(mDb);
     query.prepare(cmd);
 
-    query.bindValue(":date",item.date);
-    query.bindValue(":time",item.time);
-    query.bindValue(":user",item.user);
-    query.bindValue(":fw",item.fw);
-    query.bindValue(":sn",item.sn);
-    query.bindValue(":result",item.result);
-    query.bindValue(":memo",item.memo);
+    // query.bindValue(":date",item.date);
+    // query.bindValue(":time",item.time);
+    // query.bindValue(":user",item.user);
+    // query.bindValue(":fw",item.fw);
+    // query.bindValue(":sn",item.sn);
+    // query.bindValue(":result",item.result);
+    // query.bindValue(":memo",item.memo);
     bool ret = query.exec();
     if(!ret) throwError(query.lastError());
     return ret;

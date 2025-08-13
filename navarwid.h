@@ -31,6 +31,8 @@ private slots:
 
     void on_loginBtn_clicked();
 
+    void on_logBtn_clicked();
+
 private:
     Ui::navarwid *ui;
     Keygen *m_keygenWidget = nullptr;

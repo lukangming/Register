@@ -4,21 +4,16 @@
 #include <QtCore>
 struct sDevInfo
 {
-    QString sn;                // 序列号
-    QString hwVersion;         // 硬件版本
-    QString fwVersion;         // 固件版本
-    QString date;              // 日期
-    QString eth1Mac;           // ETH1 Mac 地址
-    QString eth2Mac;           // ETH2 Mac 地址
-    QString eth3Mac;           // ETH3 Mac 地址
-    QString spe1Mac;           // SPE1 Mac 地址
-    QString spe2Mac;           // SPE2 Mac 地址
-    QString btMac;             // BT Mac 地址
-    QString zbMac;             // ZB Mac 地址
-    QString pcbCode;           // PCB 码
-    QString reason;            // 原因
-
-    bool state;             // 状态
+    QString user;
+    QString customer;
+    QString keylength;
+    QString encryption;
+    QString paddingMode;
+    QString iv;
+    QString key;
+    QString sn;
+    QString activationCode;
+    QString licenseFile;
 };
 
 struct sDevData

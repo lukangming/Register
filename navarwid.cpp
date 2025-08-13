@@ -55,3 +55,9 @@ void navarwid::recvUserNameSlot(QString str)
 {
     ui->userLab->setText(str);
 }
+
+void navarwid::on_logBtn_clicked()
+{
+    emit navBarSig(2);
+}
+
