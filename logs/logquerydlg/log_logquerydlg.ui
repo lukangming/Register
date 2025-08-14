@@ -186,7 +186,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>校准序号：</string>
+    <string>SN：</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -211,7 +211,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>软件版本：</string>
+    <string>用户名称：</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -236,7 +236,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>状态结果：</string>
+    <string>激活码：</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

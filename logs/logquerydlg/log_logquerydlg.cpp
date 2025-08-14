@@ -23,18 +23,20 @@ Log_LogQueryDlg::~Log_LogQueryDlg()
 
 QString Log_LogQueryDlg::getCmd()
 {
+
     QString cmd = mDateBar->getDate();
-    QString str = ui->userEdit->text();
+    QString str = ui->devtypeEdit->text();
     if(!str.isEmpty()) cmd += QString(" and user like '%%1%'").arg(str);
 
-    str = ui->devtypeEdit->text();
-    if(!str.isEmpty()) cmd += QString(" and fw like '%%1%'").arg(str);
+    str = ui->userEdit->text();
+    if(!str.isEmpty()) cmd += QString(" and customer like '%%1%'").arg(str);
 
     str = ui->snEdit->text();
     if(!str.isEmpty()) cmd += QString(" and sn like '%%1%'").arg(str);
 
     str = ui->statusEdit->text();
-    if(!str.isEmpty()) cmd += QString(" and result like '%%1%'").arg(str);
+    if(!str.isEmpty()) cmd += QString(" and activationCode like '%%1%'").arg(str);
+
 
     return cmd;
 }
