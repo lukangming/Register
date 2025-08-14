@@ -7,16 +7,10 @@ class Test_CoreThread : public BaseThread
 {
     Q_OBJECT
 public:
-    enum TaskType {
-        PrintLabel1,
-        PrintLabel2,
-        WriteLog
-    };
-
     explicit Test_CoreThread(QObject *parent = nullptr);
 
     bool isContinue;
-    void setTaskType(TaskType type) { currentTask = type; }
+
     void setFlag(bool x){flag = x;}
 signals:
     void waitSig();
@@ -24,14 +18,9 @@ signals:
 
 protected:
     void run();
-    void workDown();
     void workResult();
 
-protected slots:
-    void initFunSlot();
-
 private:
-    TaskType currentTask = PrintLabel1;
     bool flag;
 
 };

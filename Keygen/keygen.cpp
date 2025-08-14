@@ -74,7 +74,6 @@ void Keygen::init()
     ui->dateEditExpire->setDate(QDate::currentDate());
     m_authFilePath.clear();
     ui->lineEditFilePath->setReadOnly(true);
-    ui->activeCode->setReadOnly(true);
 }
 
 QByteArray Keygen::aesEncrypt(const QByteArray &plainText)
@@ -135,7 +134,7 @@ void Keygen::setDevlogs()
     mDev->dt.paddingMode  = AESHelper::paddingToStr(m_aesItf.padding);
     mDev->dt.iv = m_aesItf.iv.toHex();
     mDev->dt.key = m_aesItf.key.toHex();
-    mDev->dt.sn = ui->lineEditDeviceSn->text();
+    mDev->dt.sn = ui->Sntext->toPlainText();
     mDev->dt.customer = ui->lineEditCustomer->text();
 
     mCoreThread->start();
@@ -179,7 +178,7 @@ void Keygen::on_generateButton_clicked()//生成许可证
     //     {"features", featuresObj}  // 改成对象形式
     // };
 
-    if (ui->lineEditDeviceSn->text().isEmpty()) {
+    if (ui->Sntext->toPlainText().isEmpty()) {
         QMessageBox::warning(this, "提示", "请先导入授权文件");
         return;
     }
@@ -209,7 +208,7 @@ void Keygen::on_generateButton_clicked()//生成许可证
     mDev->dt.activationCode = activation_code;
 
    // qDebug()<<activation_code;
-    ui->activeCode->setText(activation_code);
+    ui->actiCodeText->setText(activation_code);
     jsonObj["activation_code"] = activation_code;
 
     QJsonDocument doc(jsonObj);
@@ -313,7 +312,7 @@ void Keygen::decryptFile() //读取并解密文件
     else buttonGroup->button(1)->setChecked(1);
 
     ui->lineEditCustomer->setText(jsonObj.value("customer").toString());
-    ui->lineEditDeviceSn->setText(jsonObj.value("device_sn").toString());
+    ui->Sntext->setText(jsonObj.value("device_sn").toString());
     ui->dateEditExpire->setDate(QDate::fromString(jsonObj.value("expire_date").toString(), "yyyy-MM-dd"));
     QMessageBox::information(this, "成功", "解密成功");
 }
@@ -332,10 +331,10 @@ void Keygen::on_formBtn_clicked()
 
 void Keygen::on_copyBtn_clicked() //复制激活码槽函数
 {
-    QString textToCopy = ui->activeCode->text();
+    QString textToCopy = ui->actiCodeText->toPlainText();
     QClipboard *clipboard = QGuiApplication::clipboard();
     clipboard->setText(textToCopy);
-    QMessageBox::information(this, "提示", "已复制到剪贴板！");
+    QMessageBox::information(this, "提示", "激活码已复制到剪贴板！");
 }
 
 void Keygen::setAesConfig(const sAesItf &config)

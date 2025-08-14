@@ -10,23 +10,6 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 
 }
 
-void Test_CoreThread::initFunSlot()
-{
-
-}
-
-
-void Test_CoreThread::workDown()
-{   /*
-    bool ret = programFab(1);
-    if(ret) {
-        ret =  waitFor();
-        if(ret) ret = mNetWork->startProcess();
-        if(ret) ret = macSnCheck();
-        //if(ret) ret = printer();
-    }*/
-}
-
 void Test_CoreThread::workResult()
 {
     BaseLogs *logs = BaseLogs::bulid();
@@ -52,8 +35,6 @@ void Test_CoreThread::run()
     //          << "lis: " << mDev->dt.licenseFile;
 
     workResult();
-
-    //emit taskFinished(currentTask, result);
 
     isRun = false;
 }
