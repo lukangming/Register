@@ -26,4 +26,5 @@ void sDataPacket::init()
     dev->dt.activationCode = "";
     dev->dt.sn = "";
     dev->dt.licenseFile = "";
+    dev->dt.dateEnd = "";
 }

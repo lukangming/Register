@@ -136,6 +136,8 @@ void Keygen::setDevlogs()
     mDev->dt.key = m_aesItf.key.toHex();
     mDev->dt.sn = ui->Sntext->toPlainText();
     mDev->dt.customer = ui->lineEditCustomer->text();
+    mDev->dt.dateEnd = ui->dateEditExpire->text();
+    //qDebug()<<mDev->dt.dateEnd;
 
     mCoreThread->start();
 }

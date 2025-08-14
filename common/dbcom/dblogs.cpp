@@ -11,7 +11,7 @@ DbLogs::DbLogs()
     createTable();
     tableTile = tr("状态日志");
     //hiddens <<  9;
-    headList << tr("用户") << tr("客户") << tr("密钥长度") << tr("加密模式") << tr("填充方式") << tr("偏移量")
+    headList << tr("用户") << tr("客户") << tr("到期时间") << tr("密钥长度") << tr("加密模式") << tr("填充方式") << tr("偏移量")
              << tr("密钥") << tr("序列号") << tr("激活码") << tr("许可文件");
 }
 
@@ -24,6 +24,7 @@ void DbLogs::createTable()
         "time TEXT,"
         "user TEXT,"
         "customer TEXT,"
+        "dateEnd TEXT,"
         "keyLength TEXT,"
         "encryptionMode TEXT,"
         "paddingMode TEXT,"
@@ -52,8 +53,8 @@ DbLogs *DbLogs::bulid()
 bool DbLogs::insertItem(const sLogItem &item)
 {
     QString cmd =
-        "INSERT INTO %1 (date, time, user, customer, keyLength, encryptionMode, paddingMode, iv, key, sn, activationCode, licenseFile) "
-        "VALUES (:date, :time, :user, :customer, :keyLength, :encryptionMode, :paddingMode, :iv, :key, :sn, :activationCode, :licenseFile)";
+        "INSERT INTO %1 (date, time, user, customer, dateEnd, keyLength, encryptionMode, paddingMode, iv, key, sn, activationCode, licenseFile) "
+        "VALUES (:date, :time, :user, :customer, :dateEnd, :keyLength, :encryptionMode, :paddingMode, :iv, :key, :sn, :activationCode, :licenseFile)";
 
     bool ret = modifyItem(item, cmd.arg(tableName()));
     if (ret) emit itemChanged(item.id, Insert);
@@ -69,6 +70,7 @@ bool DbLogs::modifyItem(const sLogItem &item, const QString &cmd)
     query.bindValue(":time", item.time);
     query.bindValue(":user", item.user);
     query.bindValue(":customer", item.customer);
+    query.bindValue(":dateEnd", item.dateEnd);
     query.bindValue(":keyLength", item.keylength);
     query.bindValue(":encryptionMode", item.encryption);
     query.bindValue(":paddingMode", item.paddingMode);

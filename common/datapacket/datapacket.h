@@ -14,6 +14,7 @@ struct sDevInfo
     QString sn;
     QString activationCode;
     QString licenseFile;
+    QString dateEnd;
 };
 
 struct sDevData

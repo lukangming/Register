@@ -13,6 +13,7 @@ struct sLogItem : public DbBasicItem{
     QString key;
     QString activationCode;
     QString licenseFile;
+    QString dateEnd;
 
 };
 

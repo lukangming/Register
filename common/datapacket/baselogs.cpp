@@ -53,6 +53,7 @@ bool BaseLogs::setLogs(sDevInfo& dt)
     it.paddingMode = dt.paddingMode;
     it.sn = dt.sn;
     it.user = dt.user;
+    it.dateEnd = dt.dateEnd;
 
     return DbLogs::bulid()->insertItem(it);
 }

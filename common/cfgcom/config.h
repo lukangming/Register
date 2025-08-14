@@ -2,19 +2,6 @@
 #define CONFIGBASH
 #include "cfgcom.h"
 
-enum eDevTypes {
-    IMM=0,
-    Node=0,
-
-    AC = 1, // 交流
-    DC,     // 直流
-
-    Sum=0,
-    Transformer, // 互感器
-    Mn    // 锰铜
-};
-
-
 /**
  * RTU传输统计结构体
  */
